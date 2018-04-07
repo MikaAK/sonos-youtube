@@ -1,30 +1,25 @@
-import {mergeMap, mapTo as rxMapTo} from 'rxjs/operators'
+import commander from 'commander'
 import {prop} from 'ramda'
 
-import {playSong} from './helpers/play-song'
-import {sonosDevices$} from './helpers/sonos-devices'
-import {downloadYoutubeMp3$} from './helpers/download-youtube-mp3'
-import {uploadVideoToS3$} from './helpers/upload-video-to-s3'
-import {deleteFile$} from './helpers/delete-file'
+import {version} from './package.json'
+import {playYoutubeMediaOnSonosSpeaker$} from './helpers/play-youtube-media-on-sonos-speaker'
 
-const playSongInBathroom = playSong('Bathroom')
+const program = commander
+  .name('youtube-sonos')
+  .version(version)
+  .description('Play youtube content on sonos speakers both -y and -s are required')
+  .option('-y, --youtube <url/id>', 'Youtube url or video ID')
+  .option('-s, --speaker-name <name>', 'Sonos speaker name')
+  .parse(process.argv)
 
-const uploadVideoAndDeleteFile$ = (fileName) => uploadVideoToS3$(fileName)
-  .pipe(
-    mergeMap((videoUrl) => deleteFile$(fileName).pipe(rxMapTo(videoUrl)))
-  )
+if (!commander.speakerName)
+  return commander.missingArgument('speaker-name')
+else if (!commander.youtube)
+  return commander.missingArgument('youtube')
 
-const playSonosSong$ = (url) => sonosDevices$
-  .pipe(
-    mergeMap(playSongInBathroom(url))
-  )
+playYoutubeMediaOnSonosSpeaker$(commander.speakerName, commander.youtube)
+  .subscribe((devices) => {
+    console.log('Success', devices.map(prop('name')))
 
-downloadYoutubeMp3$('xQyZYPZT0tI')
-  .pipe(mergeMap(uploadVideoAndDeleteFile$), mergeMap(playSonosSong$))
-  .subscribe(() => console.log('Played Media Successfuly'))
-    // .subscribe((devices) => {
-    //   console.log('success', devices.map(prop('name')))
-
-    //   process.exit(1)
-    // })
-
+    process.exit(1)
+  })
