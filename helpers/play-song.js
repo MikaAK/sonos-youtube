@@ -1,13 +1,10 @@
-import {propEq, curry, always, prop} from 'ramda'
-import {fromPromise} from 'rxjs/observable/fromPromise'
-import {mapTo as rxMapTo} from 'rxjs/operators'
+import {curry, always} from 'ramda'
+import {mergeMap} from 'rxjs/operators'
 
-export const playSong = curry((roomName, url, devices) => {
-  const device = devices.find(propEq('name', roomName))
+import {getMasterDevice$} from './get-master-device'
+import {playMedia$} from './play-media'
 
-  if (device)
-    return fromPromise(device.setAVTransportURI(url))
-      .pipe(rxMapTo(devices))
-  else
-    throw new Error(`No device with name: ${roomName}\nDevices: ${devices.map(prop('name'))}`)
-})
+export const playSong$ = curry((roomName, url, devices) => getMasterDevice$(roomName, devices)
+  .pipe(
+    mergeMap(playMedia$(url))
+  ))
