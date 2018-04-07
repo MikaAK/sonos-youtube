@@ -6,13 +6,17 @@ import {mergeMap, map as rxMap, mapTo as rxMapTo} from 'rxjs/operators'
 import {bindNodeCallback} from 'rxjs/observable/bindNodeCallback'
 import {curry} from 'ramda'
 
-const BUCKET_NAME = 'mika-youtube-mp3'
-const AWS_URL = 'https://s3-us-west-2.amazonaws.com'
+const {
+  AWS_REGION, AWS_SECRET_ACCESS_KEY,
+  AWS_ACCESS_KEY_ID, BUCKET_NAME
+} = process.env
+
+const AWS_URL = `https://s3-${AWS_REGION}.amazonaws.com`
 const readFile$ = bindNodeCallback(readFile)
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY
 })
 
 const s3 = new AWS.S3()
