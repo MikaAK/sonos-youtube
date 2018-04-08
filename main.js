@@ -2,8 +2,8 @@ import commander from 'commander'
 import {prop} from 'ramda'
 
 import {version} from './package.json'
-import {playYoutubeMediaOnSonosSpeaker$} from './helpers/play-youtube-media-on-sonos-speaker'
-import {switchToLineIn$} from './helpers/switch-to-line-in'
+import {playYoutubeMediaOnSonosSpeaker$} from './helpers/sonos/play-youtube-media-on-speaker'
+import {switchToLineIn$} from './helpers/sonos/switch-to-line-in'
 
 const program = commander
   .name('youtube-sonos')

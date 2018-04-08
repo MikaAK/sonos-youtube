@@ -2,7 +2,7 @@ import {fromPromise} from 'rxjs/observable/fromPromise'
 import {map as rxMap, mergeMap} from 'rxjs/operators'
 import {compose, replace, prop, __} from 'ramda'
 
-import {sonosDevices$} from './sonos-devices'
+import {deviceList$} from './device-list'
 import {getMasterDevice$} from './get-master-device'
 import {playMedia$} from './play-media'
 
@@ -16,7 +16,7 @@ const playDeviceLineIn$ = (device) => fromPromise(device.getZoneInfo())
     mergeMap(playMedia$(__, device))
   )
 
-export const switchToLineIn$ = (roomName) => sonosDevices$
+export const switchToLineIn$ = (roomName) => deviceList$
   .pipe(
     mergeMap(getMasterDevice$(roomName)),
     mergeMap(playDeviceLineIn$)

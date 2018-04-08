@@ -10,7 +10,7 @@ import {
   scan as rxScan
 } from 'rxjs/operators'
 
-import {callProp} from './call-prop'
+import {callProp} from '../util/call-prop'
 
 const setName = assoc('name')
 
@@ -29,7 +29,7 @@ const mapNamesToDevices = (names, devices) => devices.map((device, i) => setName
 const organizeDevices$ = (devices) => forkJoin(devices.map(callProp('getName')))
   .pipe(rxMap((names) => mapNamesToDevices(names, devices)))
 
-export const sonosDevices$ = discoverSonosDevices$
+export const deviceList$ = discoverSonosDevices$
   .pipe(
     rxScan(flip(prepend), []),
     debounceTime(500),
