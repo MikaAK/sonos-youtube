@@ -5,7 +5,8 @@ import {mergeMap, map as rxMap, mapTo as rxMapTo} from 'rxjs/operators'
 import {bindNodeCallback} from 'rxjs/observable/bindNodeCallback'
 import {curry} from 'ramda'
 
-import {s3, BUCKET_NAME, AWS_URL} from './s3'
+import {s3, BUCKET_NAME} from './s3'
+import {createS3Url} from './create-s3-url'
 
 const readFile$ = bindNodeCallback(readFile)
 
@@ -24,5 +25,5 @@ const readFileAsBinary$ = (videoPath) => readFile$(videoPath)
 export const uploadVideo$ = (videoName) => readFileAsBinary$(videoName)
   .pipe(
     mergeMap(uploadBinary$(videoName)),
-    rxMapTo(`${AWS_URL}/${BUCKET_NAME}/${encodeURIComponent(videoName)}`)
+    rxMapTo(createS3Url(videoName))
   )

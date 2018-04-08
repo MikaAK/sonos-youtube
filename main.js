@@ -1,5 +1,4 @@
 import commander from 'commander'
-import {prop} from 'ramda'
 
 import {version} from './package.json'
 import {playYoutubeMediaOnSonosSpeaker$} from './helpers/sonos/play-youtube-media-on-speaker'

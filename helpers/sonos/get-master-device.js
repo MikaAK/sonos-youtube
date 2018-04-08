@@ -9,7 +9,7 @@ import {
   filter, isEmpty, find, nth
 } from 'ramda'
 
-import {callProp} from '../util/call-prop'
+import {callProp} from '../util'
 
 const isNotEmpty = complement(isEmpty)
 const nameEq = propEq('name')

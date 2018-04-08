@@ -10,7 +10,7 @@ import {
   scan as rxScan
 } from 'rxjs/operators'
 
-import {callProp} from '../util/call-prop'
+import {callProp} from '../util'
 
 const setName = assoc('name')
 
