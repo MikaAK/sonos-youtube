@@ -1,8 +1,13 @@
 import commander from 'commander'
+import {isNil} from 'ramda'
 
 import {version} from './package.json'
-import {playYoutubeMediaOnSonosSpeaker$} from './helpers/sonos/play-youtube-media-on-speaker'
-import {switchToLineIn$} from './helpers/sonos/switch-to-line-in'
+import {
+  switchToLineIn$,
+  playYoutubeMediaOnSonosSpeaker$,
+  addYoutubeMediaToSonosQueue$,
+  flushQueue$
+} from './helpers/sonos'
 
 const program = commander
   .name('youtube-sonos')
@@ -10,32 +15,56 @@ const program = commander
   .description('Play youtube content on sonos speakers both -y and -s are required')
   .option('-y, --youtube [url/id]', 'Youtube url or video ID')
   .option('-s, --speaker-name <name>', 'Sonos speaker name (required)')
+  .option('-q, --queue', 'Add to queue')
   .option('-l, --line-in', 'Switch speaker to line-in')
+  .option('-c, --clear-queue', 'Clear speaker queue')
   .parse(process.argv)
 
-const runPlayCommand = () => {
-  if (!commander.speakerName || !commander.youtube) {
+const checkForArgs = (args) => {
+  const areAnyNil = args.map((arg) => program[arg]).some(isNil)
+
+  if (areAnyNil) {
     commander.help()
 
-    return process.exit(0)
+    process.exit(0)
   }
-
-  return playYoutubeMediaOnSonosSpeaker$(commander.speakerName, commander.youtube)
 }
 
-const runBackToLineIn = () => {
-  if (!commander.speakerName) {
-    commander.help()
+const play = () => {
+  checkForArgs(['speakerName', 'youtube'])
 
-    return process.exit(0)
-  }
+  if (commander.queue)
+    return addYoutubeMediaToSonosQueue$(commander.speakerName, commander.youtube)
+  else
+    return playYoutubeMediaOnSonosSpeaker$(commander.speakerName, commander.youtube)
+}
+
+const backToLineIn = () => {
+  checkForArgs(['speakerName'])
 
   return switchToLineIn$(commander.speakerName)
 }
 
-(program.lineIn ? runBackToLineIn() : runPlayCommand())
+const clearQueue = () => {
+  checkForArgs(['speakerName'])
+
+  return flushQueue$(commander.speakerName)
+}
+
+const commandList = {play, clearQueue, backToLineIn}
+
+let command
+
+if (program.clearQueue)
+  command = 'clearQueue'
+else if (program.lineIn)
+  command = 'backToLineIn'
+else
+  command = 'play'
+
+commandList[command]()
   .subscribe((device) => {
-    console.log('Success', device.name)
+    console.log('Success', device.name || '')
 
     process.exit(1)
   }, (error) => {

@@ -4,7 +4,7 @@ import {compose, replace, prop, __} from 'ramda'
 
 import {deviceList$} from './device-list'
 import {getMasterDevice$} from './get-master-device'
-import {playMedia$} from './play-media'
+import {playSong$} from './play-song'
 
 const macAddress = compose(replace(/:/g, ''), prop('MACAddress'))
 const macUri = (macAddress) => `x-sonos-htastream:RINCON_${macAddress}01400:spdif`
@@ -13,7 +13,7 @@ const zoneMacUri = compose(macUri, macAddress)
 const playDeviceLineIn$ = (device) => fromPromise(device.getZoneInfo())
   .pipe(
     rxMap(zoneMacUri),
-    mergeMap(playMedia$(__, device))
+    mergeMap(playSong$(__, device))
   )
 
 export const switchToLineIn$ = (roomName) => deviceList$

@@ -1,16 +1,15 @@
-import {of as rxOf} from 'rxjs/observable/of'
 import {mergeMap} from 'rxjs/operators'
 import {curry} from 'ramda'
 
 import {findOrDownloadYoutubeMp3$} from '../youtube'
 import {log$} from '../util'
 
-import {playSong$} from './play-song'
+import {playSongInRoom$} from './play-song-in-room'
 import {deviceList$} from './device-list'
 
 const playSonosSong$ = curry((speakerName, url) => deviceList$
   .pipe(
-    mergeMap(playSong$(speakerName, url))
+    mergeMap(playSongInRoom$(speakerName, url))
   ))
 
 export const playYoutubeMediaOnSonosSpeaker$ = curry((speakerName, youtubeIdOrUrl) => findOrDownloadYoutubeMp3$(youtubeIdOrUrl)
