@@ -24,7 +24,7 @@ const checkForArgs = (args) => {
   const areAnyNil = args.map((arg) => program[arg]).some(isNil)
 
   if (areAnyNil) {
-    commander.help()
+    program.help()
 
     process.exit(0)
   }
@@ -33,22 +33,22 @@ const checkForArgs = (args) => {
 const play = () => {
   checkForArgs(['speakerName', 'youtube'])
 
-  if (commander.queue)
-    return addYoutubeMediaToSonosQueue$(commander.speakerName, commander.youtube)
+  if (program.queue)
+    return addYoutubeMediaToSonosQueue$(program.speakerName, program.youtube)
   else
-    return playYoutubeMediaOnSonosSpeaker$(commander.speakerName, commander.youtube)
+    return playYoutubeMediaOnSonosSpeaker$(program.speakerName, program.youtube)
 }
 
 const backToLineIn = () => {
   checkForArgs(['speakerName'])
 
-  return switchToLineIn$(commander.speakerName)
+  return switchToLineIn$(program.speakerName)
 }
 
 const clearQueue = () => {
   checkForArgs(['speakerName'])
 
-  return flushQueue$(commander.speakerName)
+  return flushQueue$(program.speakerName)
 }
 
 const commandList = {play, clearQueue, backToLineIn}
