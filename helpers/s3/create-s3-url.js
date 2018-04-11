@@ -1,3 +1,3 @@
-import {BUCKET_NAME, AWS_URL} from './s3'
+import {s3Config} from './s3'
 
-export const createS3Url = (videoName) => `${AWS_URL}/${BUCKET_NAME}/${encodeURIComponent(videoName)}`
+export const createS3Url = (videoName) => `${s3Config().AWS_URL}/${s3Config().BUCKET_NAME}/${encodeURIComponent(videoName)}`

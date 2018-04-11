@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MikaAK <mika@kalathil.me>",
-  "license": "unlicense",
+  "license": "UNLICENSE",
   "esm": {
     "cjs": true,
     "mode": "all"

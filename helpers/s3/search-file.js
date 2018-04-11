@@ -1,9 +1,7 @@
 import {Observable} from 'rxjs/Observable'
 import {curry, prop} from 'ramda'
 
-import {s3, BUCKET_NAME} from './s3'
-
-const Bucket = BUCKET_NAME
+import {s3, s3Config} from './s3'
 
 const fileKey = curry((key, item) => {
   const regex = new RegExp(key)
@@ -12,6 +10,8 @@ const fileKey = curry((key, item) => {
 })
 
 export const searchFile$ = (key) => new Observable((observer) => {
+  const Bucket = s3Config().BUCKET_NAME
+
   s3.listObjectsV2({Bucket}, (err, data) => {
     if (err)
       return observer.error(err)

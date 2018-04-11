@@ -5,7 +5,7 @@ import {mergeMap, map as rxMap, mapTo as rxMapTo} from 'rxjs/operators'
 import {bindNodeCallback} from 'rxjs/observable/bindNodeCallback'
 import {curry} from 'ramda'
 
-import {s3, BUCKET_NAME} from './s3'
+import {s3, s3Config} from './s3'
 import {createS3Url} from './create-s3-url'
 
 const readFile$ = bindNodeCallback(readFile)
@@ -13,7 +13,7 @@ const readFile$ = bindNodeCallback(readFile)
 const putS3Object$ = bindNodeCallback(s3.putObject.bind(s3))
 
 const uploadBinary$ = curry((videoName, binary) => putS3Object$({
-  Bucket: BUCKET_NAME,
+  Bucket: s3Config().BUCKET_NAME,
   Key: videoName,
   Body: binary,
   ACL: 'public-read'
