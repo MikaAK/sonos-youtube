@@ -7,7 +7,7 @@ import {
   playYoutubeMediaOnSonosSpeaker$,
   addYoutubeMediaToSonosQueue$,
   flushQueue$
-} from './helpers/sonos'
+} from './lib/sonos'
 
 const program = commander
   .name('youtube-sonos')
