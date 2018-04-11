@@ -2,6 +2,8 @@ import commander from 'commander'
 import {isNil} from 'ramda'
 
 import {version} from './package.json'
+
+import {setS3Config} from './lib/s3'
 import {
   switchToLineIn$,
   playYoutubeMediaOnSonosSpeaker$,
@@ -32,6 +34,7 @@ const checkForArgs = (args) => {
 
 const play = () => {
   checkForArgs(['speakerName', 'youtube'])
+  setS3Config(process.env)
 
   if (program.queue)
     return addYoutubeMediaToSonosQueue$(program.speakerName, program.youtube)
